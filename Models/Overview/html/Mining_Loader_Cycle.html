@@ -1,0 +1,559 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Mining Loader Test Cycle</title>
+<meta name="generator" content="MATLAB 26.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-09-16">
+<meta name="DC.source" content="Mining_Loader_Cycle.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h1>Mining Loader Test Cycle</h1>
+<!--introduction-->
+<p>
+<img vspace="5" hspace="5" src="Mining_Loader_Test_Cycle_Overview.png" alt=""> </p>
+<p>This example models a mining loader. The loader has an articulated chassis with two driven wheels on the chassis and two driven wheels on the front frame. A single power source powers both axles. The bucket is attached to an arm that is lifted by two hydraulic cylinders. The bucket is tilted by a cylinder that connects to the bucket via a z-linkage.</p>
+<p>For the test cycle, the loader follows one lane to a right-angle turn. Partway down that passage, the loader stops and raises the arm and bucket. The loader reverses out of that passage, and then follows a separate lane back to a position near the start. The bucket then tilts to empty its load.</p>
+<p>(<a href="matlab:web('Mining_Loader_Design_Overview.html')">return to Mining Loader Design with Simscape Overview</a>)</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Model</a>
+</li>
+<li>
+<a href="#2">Mining Loader Model</a>
+</li>
+<li>
+<a href="#3">Vehicle Model</a>
+</li>
+<li>
+<a href="#4">Chassis Model</a>
+</li>
+<li>
+<a href="#5">Implement Model</a>
+</li>
+<li>
+<a href="#6">Steer Actuation Model</a>
+</li>
+<li>
+<a href="#7">Steer Actuation, Hinge Motion</a>
+</li>
+<li>
+<a href="#8">Steer Actuation, Left Cylinder Extension</a>
+</li>
+<li>
+<a href="#9">Steer Actuation, Cylinder Actuation</a>
+</li>
+<li>
+<a href="#10">Drivetrain Model</a>
+</li>
+<li>
+<a href="#11">Transmission Model</a>
+</li>
+<li>
+<a href="#12">Motor Model</a>
+</li>
+<li>
+<a href="#13">Virtual Braking Sensor Model</a>
+</li>
+<li>
+<a href="#14">Simulation Results: Load Cycle, Hinge Motion</a>
+</li>
+<li>
+<a href="#20">Simulation Results: Load Cycle, Cylinder Motion</a>
+</li>
+<li>
+<a href="#23">Simulation Results: Load Cycle, Cylinder Actuation</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Model</h2>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');">Open Model</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_01.png" alt=""> <h2 id="2">Mining Loader Model</h2>
+<p>The mining loader model consists of the actuation system, powertrain, and the vehicle chassis with the implement. The surface upon which the vehicle drives can be selected as well.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader','force');Open">Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_02.png" alt=""> <h2 id="3">Vehicle Model</h2>
+<p>The vehicle model contains the articulated chassis with a hinge connecting the chassis to the frame. The implement attaches to the frame Two wheels on the rear frame and two wheels on the front frame are connected via driveshafts to the drivetrain Contact forces enable the tires to ride over the selected surface.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle','force');Open">Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_03.png" alt=""> <h2 id="4">Chassis Model</h2>
+<p>The chassis is the rear portion of the loader. Two powered wheels connect to the housing.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Chassis','force');Open">Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_04.png" alt=""> <h2 id="5">Implement Model</h2>
+<p>The implement subsystem houses the arm and the bucket linkage. Two actuation systems position the bucket by lifting the arm and tilting the bucket.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Implement','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_05.png" alt=""> <h2 id="6">Steer Actuation Model</h2>
+<p>Two opposing hydraulic cylinders act to steer the loader. Three methods of modeling the actuation system are provided.</p>
+<div>
+<ul>
+<li>Hinge Motion: Motion of the hinge is prescribed with an input signal</li>
+<li>Left Cylinder Motion: Only the motion of the left cylinder is prescribed with an input signal</li>
+<li>Cylinder Actuation: Both cylinders are actuated using a Simscape model of the actuator.</li>
+</ul>
+</div>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Steer','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_06.png" alt=""> <h2 id="7">Steer Actuation, Hinge Motion</h2>
+<p>The hinge motion variant prescribes the motion of the hinge connecting the chassis and frame. The simulation calculates the amount of torque it would take to move the hinge. This result can be used to size steering actuators. A similar option exists for the lift arm and the bucket tilt actuation systems.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Steer/Actuation/Hinge','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_07.png" alt=""> <h2 id="8">Steer Actuation, Left Cylinder Extension</h2>
+<p>The left cylinder motion variant prescribes the motion of the left cylinder connecting the chassis and the frame. The simulation calculates the amount of force it would take to produce this motion. This result can be used to size steering actuators. A similar option exists for the lift arm and the bucket tilt actuation systems.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Steer/Actuation/Extension%20L','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_08.png" alt=""> <h2 id="9">Steer Actuation, Cylinder Actuation</h2>
+<p>The cylinder actuation variant connects a 1D Simscape actuation model to the joints modeling the cylinder extension. This variant enables engineers to size actuators, design actuation systems, and develop steering control systems. A similar option exists for the lift arm and the bucket tilt actuation systems.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Steer/Actuation/Actuation','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_09.png" alt=""> <h2 id="10">Drivetrain Model</h2>
+<p>The drivetrain connects all four wheels via two differentials. Each wheel driveshaft is modeled as a flexible shaft. All four wheels have disc brakes.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Drivetrain','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_10.png" alt=""> <h2 id="11">Transmission Model</h2>
+<p>A variable-ratio transmission block permits any transmission ratio between the input and output shafts. To keep the model numerically efficient, a gear ratio of 1 is used when the vehicle is moving, and the ratio is set to 0 when the vehicle is not moving. This model is only compatible with a very abstract motor model.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Transmission','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_11.png" alt=""> <h2 id="12">Motor Model</h2>
+<p>The motor model is an ideal velocity source. It will spin the output shaft at the commanded speed, and that speed is calculated based on the target vehicle speed and wheel radius.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Motor','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_12.png" alt=""> <h2 id="13">Virtual Braking Sensor Model</h2>
+<p>A machine learning model is used to estimate braking distance. The current bucket load, vehicle pitch, boom angle, and vehicle speed are provided as inputs, and the trained Regression Gaussian Process model estimates the braking distance. Variable Brick Solid blocks visualize the braking distance in the animation.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Braking%20Distance%20Sensor/Estimate','force');">Open Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_13.png" alt=""> <h2 id="14">Simulation Results: Load Cycle, Hinge Motion</h2>
+<p>For the test cycle, the loader follows one lane to a right-angle turn. Partway down that passage, the loader stops and raises the arm and bucket. The loader reverses out of that passage, and then follows a separate lane back to a position near the start. The bucket then tilts to empty its load.</p>
+<p>To accomplish this cycle, the test is defined with two sets of inputs. The path-following portion is specified by providing a closed-loop driver model a target speed and heading angle for each point along the trajectory. Note that this definition is with respect to distance, not time. This covers first phase of the maneuver, reaching the end of the passage, and the final stage of the maneuver where the loader returns to the start position.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_14.png" alt=""> <p>The middle phase of the maneuver is conducted open loop. The steering angle and vehicle speed are specified as the loader reverses out of the passage and aligns with the return lane.</p>
+<p>To switch between closed-loop control and open-loop control, the closed-loop commands are overridden in a subsystem downstream of the closed-loop driver model. For a period of time, the commands of the closed-loop driver are ignored. The periods of time where the closed-loop driver commands are ignored are cited on this plot.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_15.png" alt=""> <p>The plot below shows the wheel speeds during the maneuver. During turns, the wheel speeds differ slightly from the vehicle speed as the wheels on the outside of the turn spin faster than the wheels on the inside of the turn.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_16.png" alt=""> <p>The plot below shows the path of the mining loader during the maneuver. Note that a portion of the trajectory is performed open-loop, as the loader transitions from the pile to the return path.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_17.png" alt=""> <p>The actuation during this test is prescribed motion to the "hinge" joints for steering, lifting, and tilting. The plot below shows the articulation angle, torque required to move that joint, and the actuator extensions. This helps size actuators, including range of travel and force.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_18.png" alt=""> <img vspace="5" hspace="5" src="Mining_Loader_Cycle_19.png" alt=""> <img vspace="5" hspace="5" src="Mining_Loader_Cycle_20.png" alt=""> <h2 id="20">Simulation Results: Load Cycle, Cylinder Motion</h2>
+<p>The same test cycle is performed, but in this test we prescribe the motion of one cylinder per hinge (steer, lift, tilt).</p>
+<p>The plot below shows the wheel speeds during the maneuver.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_21.png" alt=""> <p>The actuation during this test is prescribed motion to one of the actuation cylinders. The plot below shows the articulation angle, actuator extensions, and force required for one actuator. This helps size actuators, including range of travel and force.</p>
+<p>Note that we are only measuring the force required for a single actuator, so for steering and lifting the reported force will be higher than would be required for a pair of actuators.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_22.png" alt=""> <img vspace="5" hspace="5" src="Mining_Loader_Cycle_23.png" alt=""> <img vspace="5" hspace="5" src="Mining_Loader_Cycle_24.png" alt=""> <h2 id="23">Simulation Results: Load Cycle, Cylinder Actuation</h2>
+<p>The same test cycle is performed, but in this test we use ideal force actuation for all actuation systems (steer, lift, tilt).</p>
+<p>The plot below shows the wheel speeds during the maneuver.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_25.png" alt=""> <p>The actuation during this test is ideal force actuation to all cylinders. The plot below shows the articulation angle, actuator extensions, and force required for one actuator. This helps size actuators, including range of travel and force.</p>
+<img vspace="5" hspace="5" src="Mining_Loader_Cycle_26.png" alt=""> <img vspace="5" hspace="5" src="Mining_Loader_Cycle_27.png" alt=""> <img vspace="5" hspace="5" src="Mining_Loader_Cycle_28.png" alt=""> <p class="footer">Copyright 2026 The MathWorks, Inc.<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2026a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% Mining Loader Test Cycle
+% 
+% <<Mining_Loader_Test_Cycle_Overview.png>>
+%
+% This example models a mining loader. The loader has an articulated
+% chassis with two driven wheels on the chassis and two driven wheels on
+% the front frame. A single power source powers both axles. The bucket is
+% attached to an arm that is lifted by two hydraulic cylinders. The bucket
+% is tilted by a cylinder that connects to the bucket via a z-linkage. 
+% 
+% For the test cycle, the loader follows one lane to a right-angle turn.
+% Partway down that passage, the loader stops and raises the arm and
+% bucket.  The loader reverses out of that passage, and then follows a
+% separate lane back to a position near the start. The bucket then tilts to
+% empty its load.
+%
+% (<matlab:web('Mining_Loader_Design_Overview.html') return to Mining Loader Design with Simscape Overview>)
+%
+% Copyright 2026 The MathWorks, Inc.
+
+%% Model
+%
+% <matlab:open_system('Mining_Loader_Cycle'); Open Model>
+
+open_system('Mining_Loader_Cycle')
+
+ann_h = find_system('Mining_Loader_Cycle','MatchFilter',@Simulink.match.allVariants,'FindAll', 'on','type','annotation','Tag','ModelFeatures');
+for i = 1:length(ann_h)
+    set_param(ann_h(i),'Interpreter','off')
+end
+
+%% Mining Loader Model
+%
+% The mining loader model consists of the actuation system, powertrain, and
+% the vehicle chassis with the implement.  The surface upon which the
+% vehicle drives can be selected as well.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader','force');Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader','force')
+
+%% Vehicle Model
+%
+% The vehicle model contains the articulated chassis with a hinge
+% connecting the chassis to the frame. The implement attaches to the frame
+% Two wheels on the rear frame and two wheels on the front frame are
+% connected via driveshafts to the drivetrain  Contact forces enable the
+% tires to ride over the selected surface.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle','force');Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader/Vehicle','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Vehicle','force')
+
+%% Chassis Model
+%
+% The chassis is the rear portion of the loader. Two powered wheels connect
+% to the housing.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Chassis','force');Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader/Vehicle/Chassis','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Vehicle/Chassis','force')
+
+%% Implement Model
+%
+% The implement subsystem houses the arm and the bucket linkage.  Two
+% actuation systems position the bucket by lifting the arm and tilting the
+% bucket.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Implement','force'); Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader/Vehicle/Implement','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Vehicle/Implement','force')
+
+%% Steer Actuation Model
+%
+% Two opposing hydraulic cylinders act to steer the loader.  Three methods
+% of modeling the actuation system are provided. 
+%
+% * Hinge Motion: Motion of the hinge is prescribed with an input signal
+% * Left Cylinder Motion: Only the motion of the left cylinder is
+% prescribed with an input signal
+% * Cylinder Actuation: Both cylinders are actuated using a Simscape model
+% of the actuator.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Steer','force');
+% Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader/Vehicle/Steer','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Vehicle/Steer','force')
+
+
+%% Steer Actuation, Hinge Motion
+%
+% The hinge motion variant prescribes the motion of the hinge connecting
+% the chassis and frame. The simulation calculates the amount of torque it
+% would take to move the hinge. This result can be used to size
+% steering actuators.  A similar option exists for the lift arm
+% and the bucket tilt actuation systems.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Steer/Actuation/Hinge','force'); Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader','popup_steer_actuation','Hinge Motion')
+set_param('Mining_Loader_Cycle', 'SimulationCommand', 'update')
+set_param('Mining_Loader_Cycle/Mining Loader/Vehicle/Steer/Actuation/Hinge','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Vehicle/Steer/Actuation/Hinge','force')
+
+
+%% Steer Actuation, Left Cylinder Extension
+%
+% The left cylinder motion variant prescribes the motion of the left
+% cylinder connecting the chassis and the frame. The simulation calculates
+% the amount of force it would take to produce this motion. This result can
+% be used to size steering actuators. A similar option exists for the lift arm
+% and the bucket tilt actuation systems.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Steer/Actuation/Extension%20L','force'); Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader','popup_steer_actuation','Left Cylinder Motion')
+set_param('Mining_Loader_Cycle', 'SimulationCommand', 'update')
+set_param('Mining_Loader_Cycle/Mining Loader/Vehicle/Steer/Actuation/Extension L','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Vehicle/Steer/Actuation/Extension L','force')
+
+%% Steer Actuation, Cylinder Actuation
+%
+% The cylinder actuation variant connects a 1D Simscape actuation model to
+% the joints modeling the cylinder extension.  This variant enables
+% engineers to size actuators, design actuation systems, and develop
+% steering control systems. A similar option exists for the lift arm
+% and the bucket tilt actuation systems.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Vehicle/Steer/Actuation/Actuation','force'); Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader','popup_steer_actuation','Cylinder Actuation')
+set_param('Mining_Loader_Cycle', 'SimulationCommand', 'update')
+set_param('Mining_Loader_Cycle/Mining Loader/Vehicle/Steer/Actuation/Actuation','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Vehicle/Steer/Actuation/Actuation','force')
+
+
+%% Drivetrain Model
+%
+% The drivetrain connects all four wheels via two differentials.  Each
+% wheel driveshaft is modeled as a flexible shaft. All four wheels have
+% disc brakes.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Drivetrain','force'); Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader/Drivetrain','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Drivetrain','force')
+
+%% Transmission Model
+%
+% A variable-ratio transmission block permits any transmission ratio
+% between the input and output shafts. To keep the model numerically
+% efficient, a gear ratio of 1 is used when the vehicle is moving, and the
+% ratio is set to 0 when the vehicle is not moving.  This model is only
+% compatible with a very abstract motor model.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Transmission','force'); Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader/Transmission','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Transmission','force')
+
+%% Motor Model
+% 
+% The motor model is an ideal velocity source.  It will spin the output
+% shaft at the commanded speed, and that speed is calculated based on the
+% target vehicle speed and wheel radius.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Motor','force'); Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader/Motor','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Motor','force')
+
+%% Virtual Braking Sensor Model
+% 
+% A machine learning model is used to estimate braking distance.  The
+% current bucket load, vehicle pitch, boom angle, and vehicle speed are
+% provided as inputs, and the trained Regression Gaussian Process model
+% estimates the braking distance.  Variable Brick Solid blocks visualize
+% the braking distance in the animation.
+%
+% <matlab:open_system('Mining_Loader_Cycle');open_system('Mining_Loader_Cycle/Mining%20Loader/Braking%20Distance%20Sensor/Estimate','force'); Open Subsystem>
+
+set_param('Mining_Loader_Cycle/Mining Loader/Braking Distance Sensor/Estimate','LinkStatus','none')
+open_system('Mining_Loader_Cycle/Mining Loader/Braking Distance Sensor/Estimate','force')
+
+
+%% Simulation Results: Load Cycle, Hinge Motion
+%
+% For the test cycle, the loader follows one lane to a right-angle turn.
+% Partway down that passage, the loader stops and raises the arm and
+% bucket.  The loader reverses out of that passage, and then follows a
+% separate lane back to a position near the start. The bucket then tilts to
+% empty its load.
+%
+% To accomplish this cycle, the test is defined with two sets of inputs.
+% The path-following portion is specified by providing a closed-loop driver
+% model a target speed and heading angle for each point along the
+% trajectory. Note that this definition is with respect to distance, not
+% time.  This covers first phase of the maneuver, reaching the end of the
+% passage, and the final stage of the maneuver where the loader returns to
+% the start position.
+%
+
+sm_mining_loader_load_cycle_plot_ClosedLoop
+
+%%
+% The middle phase of the maneuver is conducted open loop. The steering
+% angle and vehicle speed are specified as the loader reverses out of the
+% passage and aligns with the return lane.
+%
+% To switch between closed-loop control and open-loop control, the
+% closed-loop commands are overridden in a subsystem downstream of the
+% closed-loop driver model.  For a period of time, the commands of the
+% closed-loop driver are ignored.  The periods of time where the
+% closed-loop driver commands are ignored are cited on this plot.
+
+sm_mining_loader_load_cycle_plot_OpenLoop
+
+%%
+set_param('Mining_Loader_Cycle/Mining Loader',...
+    'popup_steer_actuation','Hinge Motion','popup_lift_actuation','Hinge Motion',...
+    'popup_tilt_actuation','Hinge Motion','popup_scene','Grid',...
+    'popup_sensor','None');
+
+%%
+% The plot below shows the wheel speeds during the maneuver.  During
+% turns, the wheel speeds differ slightly from the vehicle speed as the
+% wheels on the outside of the turn spin faster than the wheels on the
+% inside of the turn.
+
+out=sim('Mining_Loader_Cycle');
+close(gcf)
+sm_mining_loader_plot1whlspd(out.logsout_Mining_Loader_Cycle,minMachParams.contact.tireRad/1000,minMachParams.contact.tireRad/1000,false);
+
+%% 
+% The plot below shows the path of the mining loader during the maneuver.
+% Note that a portion of the trajectory is performed open-loop, as the
+% loader transitions from the pile to the return path.
+sm_mining_loader_plot6vehpos(out.logsout_Mining_Loader_Cycle, Maneuver);
+
+%%
+% The actuation during this test is prescribed motion to the
+% "hinge" joints for steering, lifting, and tilting. The plot below shows
+% the articulation angle, torque required to move that joint, and the
+% actuator extensions. This helps size actuators, including range of travel
+% and force.
+
+sm_mining_loader_plot3actsteer(out.logsout_Mining_Loader_Cycle);
+sm_mining_loader_plot4actlift(out.logsout_Mining_Loader_Cycle);
+sm_mining_loader_plot5acttilt(out.logsout_Mining_Loader_Cycle);
+
+%% Simulation Results: Load Cycle, Cylinder Motion
+%
+% The same test cycle is performed, but in this test we prescribe the
+% motion of one cylinder per hinge (steer, lift, tilt). 
+
+close(gcf)
+set_param('Mining_Loader_Cycle/Mining Loader',...
+    'popup_steer_actuation','Left Cylinder Motion',...
+    'popup_lift_actuation','Left Cylinder Motion',...
+    'popup_tilt_actuation','Cylinder Motion','popup_scene','Grid',...
+    'popup_sensor','None');
+
+out=sim('Mining_Loader_Cycle');
+
+%%
+% The plot below shows the wheel speeds during the maneuver.  
+sm_mining_loader_plot1whlspd(out.logsout_Mining_Loader_Cycle,minMachParams.contact.tireRad/1000,minMachParams.contact.tireRad/1000,false);
+
+%%
+% The actuation during this test is prescribed motion to one of the
+% actuation cylinders. The plot below shows the articulation angle,
+% actuator extensions, and force required for one actuator. This helps size
+% actuators, including range of travel and force.
+%
+% Note that we are only measuring the force required for a single actuator,
+% so for steering and lifting the reported force will be higher than would
+% be required for a pair of actuators.
+
+sm_mining_loader_plot3actsteer(out.logsout_Mining_Loader_Cycle);
+sm_mining_loader_plot4actlift(out.logsout_Mining_Loader_Cycle);
+sm_mining_loader_plot5acttilt(out.logsout_Mining_Loader_Cycle);
+
+%% Simulation Results: Load Cycle, Cylinder Actuation
+%
+% The same test cycle is performed, but in this test we use ideal force
+% actuation for all actuation systems (steer, lift, tilt). 
+
+set_param('Mining_Loader_Cycle/Mining Loader',...
+    'popup_steer_actuation','Cylinder Actuation',...
+    'popup_lift_actuation','Cylinder Actuation',...
+    'popup_tilt_actuation','Cylinder Actuation','popup_scene','Grid',...
+    'popup_sensor','None');
+
+out=sim('Mining_Loader_Cycle');
+
+%%
+% The plot below shows the wheel speeds during the maneuver.  
+close(gcf)
+sm_mining_loader_plot1whlspd(out.logsout_Mining_Loader_Cycle,minMachParams.contact.tireRad/1000,minMachParams.contact.tireRad/1000,false);
+
+%%
+% The actuation during this test is ideal force actuation to all cylinders.
+% The plot below shows the articulation angle, actuator extensions, and
+% force required for one actuator. This helps size actuators, including
+% range of travel and force.
+
+sm_mining_loader_plot3actsteer(out.logsout_Mining_Loader_Cycle);
+sm_mining_loader_plot4actlift(out.logsout_Mining_Loader_Cycle);
+sm_mining_loader_plot5acttilt(out.logsout_Mining_Loader_Cycle);
+
+%%
+
+%clear all
+%close all
+bdclose all
+
+##### SOURCE END #####
+-->
+</body>
+</html>

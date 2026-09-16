@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Info File="Scripts_Data/startup_sm_mining_loader.m" GroupUUID="default" Icon="" Name="startup_sm_mining_loader" Type="StartUp" Visible="0">
+    <Extension Name="StartUpPrev" Value="71fed3ea-5aca-42d7-9a37-4b1295ab8767"/>
+</Info>

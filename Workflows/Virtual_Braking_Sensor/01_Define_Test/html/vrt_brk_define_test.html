@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Create Virtual Test with Performance Metrics</title>
+<meta name="generator" content="MATLAB 26.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-09-16">
+<meta name="DC.source" content="vrt_brk_define_test.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h1>Create Virtual Test with Performance Metrics</h1>
+<!--introduction-->
+<p>
+<img vspace="5" hspace="5" src="Mining_Loader_Brake_Test_Overview.png" alt=""> </p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Overview</a>
+</li>
+<li>
+<a href="#2">Open and Configure Model</a>
+</li>
+<li>
+<a href="#3">Mining Loader Model</a>
+</li>
+<li>
+<a href="#4">Braking Test Controller</a>
+</li>
+<li>
+<a href="#5">Simulation Results: Braking Test 1</a>
+</li>
+<li>
+<a href="#6">Simulation Results: Braking Test 2</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Overview</h2>
+<p>This example defines a braking test for a mining loader. The braking distance is obtained via post processing. The purpose of this test is to generate training data for an AI surrogate model that can estimate the braking distance based on current vehicle conditions. The test is parameterized so that the conditions of the test can be varied:</p>
+<div>
+<ol>
+<li>Vehicle Speed</li>
+<li>Boom Angle</li>
+<li>Bucket Load</li>
+<li>Surface Slope</li>
+</ol>
+</div>
+<p>The code used to create this documentation is here: <a href="matlab:edit('vrt_brk_define_test.m');">vrt_brk_define_test.m</a>
+</p>
+<p>(<a href="matlab:web('Mining_Loader_Design_Overview.html')">return to Mining Loader Design with Simscape Overview</a>)</p>
+<h2 id="2">Open and Configure Model</h2>
+<p>The vehicle model is created using Simscape. Inputs from the workspace configure the test conditions. A simple state machine applies the brakes to assess braking distance</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Sweep');">Open Model</a>
+</p>
+<img vspace="5" hspace="5" src="vrt_brk_define_test_01.png" alt=""> <h2 id="3">Mining Loader Model</h2>
+<p>The mining loader model consists of the actuation system, powertrain, and the vehicle chassis with the implement. The surface upon which the vehicle drives can be selected as well. For the braking test, a flat slope with a parameterized incline is selected.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Sweep');open_system('Mining_Loader_Sweep/Mining%20Loader','force');Open">Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="vrt_brk_define_test_02.png" alt=""> <h2 id="4">Braking Test Controller</h2>
+<p>The test sequence specifies when the brakes will be applied.</p>
+<div>
+<ol>
+<li>
+<b>Initialization</b> : Loader settles onto surface</li>
+<li>
+<b>NotAtTarget</b> : Loader accelerates to target speed</li>
+<li>
+<b>AtTarget</b> : Loader settles at target speed</li>
+<li>
+<b>EngageBrake</b> : Brakes are applied</li>
+<li>
+<b>StopSim</b> : Loader speed is below threshold for long enough period of time</li>
+</ol>
+</div>
+<p>
+<a href="matlab:open_system('Mining_Loader_Sweep');open_system('Mining_Loader_Sweep/Braking%20Test%20Control/Test%20Sequence','force');Open">Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="vrt_brk_define_test_03.png" alt=""> <h2 id="5">Simulation Results: Braking Test 1</h2>
+<p>The test conditions can be defined using a MATLAB App.</p>
+<p>
+<img vspace="5" hspace="5" src="Mining_Loader_Brake_Test_App.png" alt=""> </p>
+<p>The app calls a function that configures inputs and parameters for the braking test. Pressing button "Run Test"</p>
+<div>
+<ol>
+<li>Echoes the command to the MATLAB Command window</li>
+<li>Runs the command to configure the test</li>
+<li>Runs the simulation</li>
+<li>Processes the results and creates a plot with the braking distance</li>
+</ol>
+</div>
+<p>
+<img vspace="5" hspace="5" src="Mining_Loader_Brake_Test_1.png" alt=""> </p>
+<img vspace="5" hspace="5" src="vrt_brk_define_test_04.png" alt=""> <h2 id="6">Simulation Results: Braking Test 2</h2>
+<p>We increase the load, switch to reverse, and switch the slope for our second test.</p>
+<p>
+<img vspace="5" hspace="5" src="Mining_Loader_Brake_Test_2.png" alt=""> </p>
+<img vspace="5" hspace="5" src="vrt_brk_define_test_05.png" alt=""> <p class="footer">Copyright 2026 The MathWorks, Inc.<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2026a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% Create Virtual Test with Performance Metrics 
+%
+% <<Mining_Loader_Brake_Test_Overview.png>>
+%
+
+%% Overview
+% This example defines a braking test for a mining loader. The braking
+% distance is obtained via post processing. The purpose of this test is to
+% generate training data for an AI surrogate model that can estimate the
+% braking distance based on current vehicle conditions. The test is
+% parameterized so that the conditions of the test can be varied:
+%
+% # Vehicle Speed
+% # Boom Angle
+% # Bucket Load
+% # Surface Slope
+%
+% The code used to create this documentation is here: <matlab:edit('vrt_brk_define_test.m'); vrt_brk_define_test.m>
+%
+% (<matlab:web('Mining_Loader_Design_Overview.html') return to Mining Loader Design with Simscape Overview>)
+%
+% Copyright 2026 The MathWorks, Inc.
+
+%% Open and Configure Model
+%
+% The vehicle model is created using Simscape.  Inputs from the workspace
+% configure the test conditions. A simple state machine applies the brakes
+% to assess braking distance
+%
+% <matlab:open_system('Mining_Loader_Sweep'); Open Model>
+
+modelName = 'Mining_Loader_Sweep';
+if ~bdIsLoaded(modelName)
+    open_system(modelName);
+end
+set_param([modelName '/Mining Loader'],'popup_scene','SlopeX');
+set_param([modelName '/Mining Loader'],'popup_sensor','None');
+set_param([modelName '/Mining Loader'],...
+    'popup_steer_actuation','Hinge Motion',...
+    'popup_lift_actuation','Hinge Motion',...
+    'popup_tilt_actuation','Hinge Motion'...
+    )
+
+Init.Vehicle.px = 0;
+
+ann_h = find_system(modelName,'MatchFilter',@Simulink.match.allVariants,'FindAll', 'on','type','annotation','Tag','ModelFeatures');
+for i = 1:length(ann_h)
+    set_param(ann_h(i),'Interpreter','off')
+    end
+
+%% Mining Loader Model
+%
+% The mining loader model consists of the actuation system, powertrain, and
+% the vehicle chassis with the implement.  The surface upon which the
+% vehicle drives can be selected as well.  For the braking test, a flat
+% slope with a parameterized incline is selected.
+%
+% <matlab:open_system('Mining_Loader_Sweep');open_system('Mining_Loader_Sweep/Mining%20Loader','force');Open Subsystem>
+
+set_param('Mining_Loader_Sweep/Mining Loader','LinkStatus','none')
+open_system('Mining_Loader_Sweep/Mining Loader','force')
+
+
+%% Braking Test Controller
+%
+% The test sequence specifies when the brakes will be applied.
+%
+% # *Initialization* : Loader settles onto surface
+% # *NotAtTarget* : Loader accelerates to target speed
+% # *AtTarget* : Loader settles at target speed
+% # *EngageBrake* : Brakes are applied
+% # *StopSim* : Loader speed is below threshold for long enough period of time
+%
+% <matlab:open_system('Mining_Loader_Sweep');open_system('Mining_Loader_Sweep/Braking%20Test%20Control/Test%20Sequence','force');Open Subsystem>
+
+set_param('Mining_Loader_Sweep/Braking Test Control/Test Sequence','LinkStatus','none')
+open_system('Mining_Loader_Sweep/Braking Test Control/Test Sequence','force')
+
+
+%% Simulation Results: Braking Test 1 
+%
+% The test conditions can be defined using a MATLAB App.
+% 
+% <<Mining_Loader_Brake_Test_App.png>>
+% 
+% The app calls a function that configures inputs and parameters for the
+% braking test. Pressing button "Run Test" 
+% 
+% # Echoes the command to the MATLAB Command window
+% # Runs the command to configure the test
+% # Runs the simulation
+% # Processes the results and creates a plot with the braking distance
+%
+% <<Mining_Loader_Brake_Test_1.png>>
+
+[extInput_Mining_Loader_Sweep, minMachParams, Init] = test_MLSweep_braking(...
+    'Mining_Loader_Sweep',...
+    minMachParams,testSettings,Init,...
+     5, ... % Vehicle Speed
+    10, ... % Slope
+     0, ... % Steering Angle (hinge)
+    45, ... % Boom Lift Angle
+     5, ... % Bucket Tilt Angle
+ 10000, ... % Bucket Load
+    40  ... % Max Simulation Time
+    );
+
+out = sim('Mining_Loader_Sweep');
+sm_mining_loader_plot1whlspd(out.logsout_Mining_Loader_Sweep,minMachParams.contact.tireRad/1000,minMachParams.contact.tireRad/1000,true);
+
+%% Simulation Results: Braking Test 2 
+%
+% We increase the load, switch to reverse, and switch the slope for our
+% second test.
+%
+% <<Mining_Loader_Brake_Test_2.png>>
+
+[extInput_Mining_Loader_Sweep, minMachParams, Init] = test_MLSweep_braking(...
+    'Mining_Loader_Sweep',...
+    minMachParams,testSettings,Init,...
+   -10, ... % Vehicle Speed
+   -10, ... % Slope
+     0, ... % Steering Angle (hinge)
+    45, ... % Boom Lift Angle
+     5, ... % Bucket Tilt Angle
+ 14000, ... % Bucket Load
+    40  ... % Max Simulation Time
+    );
+
+out = sim('Mining_Loader_Sweep');
+sm_mining_loader_plot1whlspd(out.logsout_Mining_Loader_Sweep,minMachParams.contact.tireRad/1000,minMachParams.contact.tireRad/1000,true);
+
+%%
+
+%clear all
+%close all
+bdclose all
+
+
+##### SOURCE END #####
+-->
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Generate Training Data by Running Design of Experiments</title>
+<meta name="generator" content="MATLAB 26.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-09-16">
+<meta name="DC.source" content="vrt_brk_generate_data.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h1>Generate Training Data by Running Design of Experiments</h1>
+<!--introduction-->
+<p>
+<img vspace="5" hspace="5" src="Mining_Loader_Generate_Data_Overview.png" alt=""> </p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Overview</a>
+</li>
+<li>
+<a href="#2">Open and Configure Model</a>
+</li>
+<li>
+<a href="#3">Mining Loader Model</a>
+</li>
+<li>
+<a href="#4">Create Table of Test Conditions</a>
+</li>
+<li>
+<a href="#5">Create Simulation Input Object</a>
+</li>
+<li>
+<a href="#6">Run Simulations Using Parallel Computing</a>
+</li>
+<li>
+<a href="#7">Extract Braking Distance</a>
+</li>
+<li>
+<a href="#8">Re-Run Test with Longest Braking Distance</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Overview</h2>
+<p>This example generates training data for a AI surrogate model. A simple factorial distribution of experiments is created. The simulation model is tested with those parameters and the braking distance is measured. The parameter sets and braking distance will be used to train an AI surrogate model.</p>
+<p>The code used to create this documentation is here: <a href="matlab:edit('vrt_brk_generate_data.m');">vrt_brk_generate_data.m</a>
+</p>
+<p>(<a href="matlab:web('Mining_Loader_Design_Overview.html')">return to Mining Loader Design with Simscape Overview</a>)</p>
+<h2 id="2">Open and Configure Model</h2>
+<p>The vehicle model is created using Simscape. Using MATLAB commands, we configure the model to use the simplest actuation method, prescribed motion for the steer, lift, and tilt joints. The scene is configured to use a parameterized slope, and we turn off the braking distance estimation.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Sweep');">Open Model</a>
+</p>
+<img vspace="5" hspace="5" src="vrt_brk_generate_data_01.png" alt=""> <h2 id="3">Mining Loader Model</h2>
+<p>The mining loader model consists of the actuation system, powertrain, and the vehicle chassis with the implement. The surface upon which the vehicle drives can be selected as well.</p>
+<p>
+<a href="matlab:open_system('Mining_Loader_Sweep');open_system('Mining_Loader_Sweep/Mining%20Loader','force');Open">Subsystem</a>
+</p>
+<img vspace="5" hspace="5" src="vrt_brk_generate_data_02.png" alt=""> <h2 id="4">Create Table of Test Conditions</h2>
+<p>A factorial distribution is used to generate the test conditions. The braking distance will increase sharply towards the edges of the parameter space (high loads, high slope, high speed). It is important to capture the limits of the operating conditions. A Latin Hypercube distribution was also tested, but it resulted in a surrogate model that was less accurate at the edges of the operating conditions.</p>
+<img vspace="5" hspace="5" src="vrt_brk_generate_data_03.png" alt=""> <h2 id="5">Create Simulation Input Object</h2>
+<p>A simulation input object contains all of the model and parameter settings for the test sweep we wish to run. Each element in the input object defines an individual brake test and uses the parameters from the distribution created above.</p>
+<pre class="codeoutput">
+simIn = 
+
+  1&times;720 SimulationInput array with properties:
+
+    ModelName
+    InitialState
+    ExternalInput
+    ModelParameters
+    BlockParameters
+    Variables
+    PreSimFcn
+    PostSimFcn
+    UserString
+    VariantConfiguration
+
+</pre>
+<h2 id="6">Run Simulations Using Parallel Computing</h2>
+<p>Using the parsim() command, the suite of tests is executed in parallel on multiple workers. Using Fast Restart, the model is only compiled once per worker. Because we have defined the design parameters as run-time parameters, we can modify their values even within the compiled model. This dramatically shortens the time it takes to execute the sweep.</p>
+<p>Progress is reported using the Simulation Manager. We can see if any warnings or errors have occurred during any of the tests and see how long each run has taken.</p>
+<pre class="codeoutput">Starting parallel pool (parpool) using the 'Processes' profile ...
+Connected to parallel pool with 4 workers.
+</pre>
+<img vspace="5" hspace="5" src="vrt_brk_generate_data_04.png" alt=""> <h2 id="7">Extract Braking Distance</h2>
+<p>The results of the sweep are passed to a function to calculate the braking distance. This is required to train the surrogate model, as it needs the test conditions and the resulting braking distance.</p>
+<pre class="codeoutput">Number of samples in FullResultsTable:720
+
+ans =
+
+  10&times;5 table
+
+    BucketLoad    Slope     BoomAngle    VehSpeedCmd    BrakingDist
+    __________    ______    _________    ___________    ___________
+
+          0       11.207        0            -12          0.98742  
+       3500       11.401        0            -12           1.0362  
+       7000         11.6        0            -12           1.0795  
+      10500         11.8        0            -12           1.1212  
+      14000       12.004        0            -12           1.1595  
+          0       6.6497        0            -12           1.1375  
+       3500       6.8466        0            -12           1.2041  
+       7000       7.0384        0            -12           1.2647  
+      10500       7.2335        0            -12           1.3244  
+      14000       7.4349        0            -12           1.3795  
+
+</pre>
+<img vspace="5" hspace="5" src="vrt_brk_generate_data_05.png" alt=""> <img vspace="5" hspace="5" src="vrt_brk_generate_data_06.png" alt=""> <img vspace="5" hspace="5" src="vrt_brk_generate_data_07.png" alt=""> <h2 id="8">Re-Run Test with Longest Braking Distance</h2>
+<p>In this step, we find the run with the longest braking distance and re-run just that test. During this step, we turn Simscape logging back on and animate the results. This lets us review the results of this individual test more closely.</p>
+<pre class="codeoutput">    BoomAngle    VehicleSpeed    Slope    BucketLoad
+    _________    ____________    _____    __________
+
+       45            -12         11.31      14000   
+
+</pre>
+<img vspace="5" hspace="5" src="vrt_brk_generate_data_08.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2026a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% Generate Training Data by Running Design of Experiments
+%
+% <<Mining_Loader_Generate_Data_Overview.png>>
+%
+
+%% Overview
+% This example generates training data for a AI surrogate model. A simple
+% factorial distribution of experiments is created. The simulation model is
+% tested with those parameters and the braking distance is measured. The
+% parameter sets and braking distance will be used to train an AI
+% surrogate model.
+%
+% The code used to create this documentation is here: <matlab:edit('vrt_brk_generate_data.m'); vrt_brk_generate_data.m>
+%
+% (<matlab:web('Mining_Loader_Design_Overview.html') return to Mining Loader Design with Simscape Overview>)
+
+%% Open and Configure Model
+%
+% The vehicle model is created using Simscape.  Using MATLAB commands, we
+% configure the model to use the simplest actuation method, prescribed
+% motion for the steer, lift, and tilt joints.  The scene is configured to
+% use a parameterized slope, and we turn off the braking distance
+% estimation.
+%
+% <matlab:open_system('Mining_Loader_Sweep'); Open Model>
+
+modelName = 'Mining_Loader_Sweep';
+if ~bdIsLoaded(modelName)
+    open_system(modelName);
+end
+set_param([modelName '/Mining Loader'],'popup_scene','SlopeX');
+set_param([modelName '/Mining Loader'],'popup_sensor','None');
+set_param([modelName '/Mining Loader'],...
+    'popup_steer_actuation','Hinge Motion',...
+    'popup_lift_actuation','Hinge Motion',...
+    'popup_tilt_actuation','Hinge Motion'...
+    )
+
+Init.Vehicle.px = 0;
+now_string = datestr(now,'yymmdd_HHMM'); % For saving results
+
+%% Mining Loader Model
+%
+% The mining loader model consists of the actuation system, powertrain, and
+% the vehicle chassis with the implement.  The surface upon which the
+% vehicle drives can be selected as well.
+%
+% <matlab:open_system('Mining_Loader_Sweep');open_system('Mining_Loader_Sweep/Mining%20Loader','force');Open Subsystem>
+
+% Open, but do not break link as model must be saved later
+open_system('Mining_Loader_Sweep/Mining Loader','force')
+
+%% Create Table of Test Conditions
+%
+% A factorial distribution is used to generate the test conditions.  The
+% braking distance will increase sharply towards the edges of the parameter
+% space (high loads, high slope, high speed). It is important to capture
+% the limits of the operating conditions.  A Latin Hypercube distribution
+% was also tested, but it resulted in a surrogate model that was less
+% accurate at the edges of the operating conditions.
+
+[allTests,testPoints] = generateTestPoints( ...
+    minMachParams, ...
+    4, ...   % Number of points for boom lift angles
+    6, ...   % Number of points for vehicle speeds
+    6, ...   % Number of points for slopes
+    5);      % Number of points for bucket loads
+numAllTestInputs = height(allTests);
+
+% Alternate: Latin Hypercube
+%[allTests] = generateTestPointsLHS(720,minMachParams);
+%numAllTestInputs = height(allTests);
+
+figure;
+[~,ax,bigax] = gplotmatrix(allTests{:,:},[],[],[],[],[],[],[],...
+    allTests.Properties.VariableNames, allTests.Properties.VariableNames);
+title(['Scatter Plot of ' num2str(height(allTests)) ' Samples for ' num2str(width(allTests)) ' Parameters'],'FontSize',18)
+
+set(gcf,'Position',[54   255   850   706])
+for j = 1:size(ax,1)
+    for k = 1:size(ax,2)
+        %ax(j,k).XLabel.String = '';
+        %ax(j,k).YLabel.Interpreter = 'none';
+        %ax(j,k).YLabel.Rotation = 0;        
+        %ax(j,k).YTickLabel = [];
+        ax(j,k).Box = 'on'; 
+    end
+end
+
+save allTestTable allTests
+
+%% Create Simulation Input Object
+% 
+% A simulation input object contains all of the model and parameter
+% settings for the test sweep we wish to run. Each element in the input
+% object defines an individual brake test and uses the parameters from the
+% distribution created above.
+
+% Assign Defaults for Simulation Input Object
+simIn = Simulink.SimulationInput(modelName);
+simIn = simIn.setModelParameter('SimMechanicsOpenEditorOnUpdate', 'off');
+simIn = simIn.setModelParameter('SimscapeLogType', 'None');
+simIn = simIn.setVariable('stopTime', stopTime);
+simIn = simIn.setVariable('testSettings',testSettings);
+simIn = simIn.setVariable('Init',Init);
+
+% Assign defaults to all inputs
+simIn(1:numAllTestInputs) = simIn;
+
+% Get default structure of inputs from model
+testInputs = createInputDataset(modelName, "UpdateDiagram", false);
+
+% Steering Angle is constant for all tests
+testInputs{1}.time = [0 stopTime]';
+testInputs{1}.data = [minMachParams.initCond.steerAngle minMachParams.initCond.steerAngle]';
+
+% Bucket Tilt Angle is constant for all tests
+testInputs{3}.time = [0 stopTime]';
+testInputs{3}.data = [minMachParams.initCond.bucketAngle minMachParams.initCond.bucketAngle]';
+
+% Inputs for factorial distribution
+for ii = 1:1:numAllTestInputs
+    % Set test conditions
+    simIn(ii) = setVariable(simIn(ii), 'initBoomAngle', allTests.BoomAngle(ii)); % [deg]
+    simIn(ii) = setVariable(simIn(ii), 'bucketLoadMass', allTests.BucketLoad(ii)); % [kg]
+    Init.Vehicle.pitch = -allTests.Slope(ii);
+    simIn(ii) = setVariable(simIn(ii), 'Init', Init); % [deg]
+    simIn(ii) = setVariable(simIn(ii), 'targetSpeedMag', abs(allTests.VehicleSpeed(ii))); % [km/hr]
+
+    % Boom Lift Angle
+    testInputs{2} = timeseries([allTests.BoomAngle(ii) allTests.BoomAngle(ii)]',...
+        [0 stopTime]',...
+        'Name',testInputs{2}.Name);
+
+    % Vehicle Speed
+    testInputs{4} = timeseries([0 0 allTests.VehicleSpeed(ii) allTests.VehicleSpeed(ii)]',...
+        [0 testSettings.initSettlingTime testSettings.initSettlingTime+testSettings.speedRampTime stopTime]',...
+        'Name',testInputs{4}.Name);
+
+    % Set the external input
+    simIn(ii) = setExternalInput(simIn(ii), testInputs);
+end
+
+simIn
+
+%% Run Simulations Using Parallel Computing
+%
+% Using the parsim() command, the suite of tests is executed in parallel on
+% multiple workers.  Using Fast Restart, the model is only compiled once
+% per worker.  Because we have defined the design parameters as run-time
+% parameters, we can modify their values even within the compiled model.
+% This dramatically shortens the time it takes to execute the sweep.
+%
+% Progress is reported using the Simulation Manager. We can see if any
+% warnings or errors have occurred during any of the tests and see how long
+% each run has taken.
+
+close_system('Mining_Loader_Sweep/Mining Loader');
+save_system(modelName) % Must be saved for parsim
+
+TrainingResults = parsim(simIn, ...
+    'ShowSimulationManager', 'on','UseFastRestart','on','ShowProgress','off');
+
+save TrainingResultsOut TrainingResults
+
+%% Extract Braking Distance
+%
+% The results of the sweep are passed to a function to calculate the
+% braking distance. This is required to train the surrogate model, as it
+% needs the test conditions and the resulting braking distance.
+
+[FullResultsTable, BrkDist_MeasEst] = Extract_Training_Data(TrainingResults,now_string);
+
+disp(['Number of samples in FullResultsTable:' num2str(height(FullResultsTable))]);
+FullResultsTable(1:10,:)
+
+save FullResultsTable FullResultsTable
+
+%% Re-Run Test with Longest Braking Distance
+%
+% In this step, we find the run with the longest braking distance and
+% re-run just that test. During this step, we turn Simscape logging back on
+% and animate the results.  This lets us review the results of this
+% individual test more closely.
+
+% Maximum braking distance and first row index where it occurs
+[maxVal, testIdxToRun] = max(FullResultsTable.BrakingDist);
+
+disp(allTests(testIdxToRun,:));
+
+% Copy Simulation Input Object element to separate variable
+simInMxBrk = simIn(testIdxToRun);
+
+% Turn logging and animation on for Simulation Input Object element
+simInMxBrk = simInMxBrk.setModelParameter('SimMechanicsOpenEditorOnUpdate', 'on');
+simInMxBrk = simInMxBrk.setModelParameter('SimscapeLogType', 'All');
+
+% Run the simulation
+out = sim(simInMxBrk);
+extInput_Mining_Loader_Sweep = testInputs;
+sm_mining_loader_plot1whlspd(out.logsout_Mining_Loader_Sweep,minMachParams.contact.tireRad/1000,minMachParams.contact.tireRad/1000,true);
+
+%%
+%clear all
+%close all
+bdclose all
+
+
+##### SOURCE END #####
+-->
+</body>
+</html>
